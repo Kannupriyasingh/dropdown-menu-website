@@ -87,3 +87,33 @@ border-bottom: none;
     margin-left: 140px;
     background: rgb(0,100,0);
 }
+
+
+.better{
+    margin: auto;
+    width: 50%;
+    border: 3px solid green;
+    padding: 10px;
+}
+
+.better1{
+    margin: auto;
+    width: 50%;
+    padding: 10px;
+}
+
+img{
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    width: 40%;
+}
+
+.center{
+    margin: auto;
+    border: 3px solid  green;
+}
+
+input{
+    margin: 0 auto;
+}
