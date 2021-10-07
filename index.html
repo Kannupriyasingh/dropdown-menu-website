@@ -48,5 +48,97 @@
             <li><a href="#"><i class="fa fa-phone"></i>F</a></li>
         </ul>
     </div>
+
+    <div class="better">
+        <style> img{height: 200px; width: 200px; border: 2px solid black;}</style>
+        <div class="better1"> Image Name <input class="center" id="namebox" type="text"><br><br></div> 
+        <img id="myimg" type="file" ><label id="UpProgress" ></label><br><br>
+        <div class="better1">
+        <button id="select" >Select Image</button>
+        <button id="upload" >Upload Image</button>
+        <button id="retrieve" >Retrieve Image</button>
+    </div>
+
+                <!--------------------------FIREBASE LIBRARIES-------------------------------------------------->
+<script src="https://www.gstatic.com/firebasejs/7.7.0/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/7.7.0/firebase-auth.js"></script>
+<script src="https://www.gstatic.com/firebasejs/7.7.0/firebase-database.js"></script> 
+<script src="https://www.gstatic.com/firebasejs/7.7.0/firebase-storage.js"></script> 
+
+
+<script id="MainScript">
+    var ImgName, ImgUrl;
+    var files = [];
+    var reader;
+
+    const firebaseConfig = {
+  apiKey: "AIzaSyB-LlKXudr8r82RVGnOp3utffw_SEezJsA",
+  authDomain: "majorp1-d575e.firebaseapp.com",
+  databaseURL: "https://majorp1-d575e-default-rtdb.firebaseio.com",
+  projectId: "majorp1-d575e",
+  storageBucket: "majorp1-d575e.appspot.com",
+  messagingSenderId: "881250747449",
+  appId: "1:881250747449:web:f516663d9d55e45058b9e8",
+  measurementId: "G-9J1XGJMQPW"
+};
+    // Initialize Firebase
+    firebase.initializeApp(firebaseConfig);
+    console.log(firebase);
+//---------------------------Select button------------------------------
+document.getElementById('select').onclick = function(e){
+    var input = document.createElement('input');
+    input.type = 'file';
+    input.click();
+
+    input.onchange= e =>{
+        files = e.target.files;
+        reader =  new FileReader();
+        reader.onload = function(){
+            document.getElementById('myimg').src = reader.result;
+        }
+        reader.readAsDataURL(files[0]);
+    }
+    input.click();
+}
+
+//------------------------------upload button--------------------------------
+
+document.getElementById('upload').onclick = function(e){
+ImgName = document.getElementById('namebox').value;
+var uploadtask = firebase.storage().ref('Images/' + ImgName + ".png").put(files[0]);
+
+uploadtask.on('state_changed', function(snapshot){
+    var progress = (snapshot.bytesTranferred / snapshot.totalBytes)*100;
+    document.getElementById('UpProgress').innerHTML = 'Upload' + progress +'%';
+},
+
+function(error){
+    alert('error in saving the image');
+},
+
+function(e){
+uploadtask.snapshot.ref.getDownloadURL().then(function(url){
+    ImgUrl = url;
+firebase.database().ref('Pictures/' + ImgName).set({
+    Name : ImgName,
+    Link : ImgUrl
+});
+alert('image uploaded');
+}
+);
+});
+}
+
+//------------------------------retrieve----------------------------
+document.getElementById('retrieve').onclick = function(){
+    ImgName = document.getElementById('namebox').value;
+    firebase.database().ref('Pictures/' + ImgName).on('value', function(snapshot){
+        document.getElementById('myimg').src = snapshot.val().Link;
+    });
+}
+
+    
+</script>
+    </div>
     </body>
 </html>
